@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,15 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				knightly: {
+					gold: '#91814A',
+					'gold-light': '#B8AD7E',
+					green: '#3A4D39',
+					'green-light': '#739072',
+					neutral: '#F0F0F0',
+					'neutral-dark': '#E0E0E0',
+				},
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
