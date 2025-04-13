@@ -10,12 +10,12 @@ interface EmailPayload {
   body: string;
 }
 
-export const sendOwnerEmail = (formData: BookingFormData): Promise<boolean> => {
+export const sendOwnerEmail = async (formData: BookingFormData): Promise<boolean> => {
   const quote = calculateQuote(formData);
-  if (!quote || !formData.eventDate) return Promise.resolve(false);
+  if (!quote || !formData.eventDate) return false;
   
   const selectedPackage = PACKAGES.find(pkg => pkg.id === formData.selectedPackage);
-  if (!selectedPackage) return Promise.resolve(false);
+  if (!selectedPackage) return false;
   
   const selectedAddOns = ADD_ONS.filter(addon => formData.addOns.includes(addon.id));
   const addOnsList = selectedAddOns.map(addon => `- ${addon.name}: ${formatCurrency(addon.price)}`).join('\n');
@@ -32,6 +32,7 @@ Event Type: ${formData.eventType}
 Event Date: ${format(formData.eventDate, 'PPP')}
 
 Selected Package: ${selectedPackage.name} (${formatCurrency(selectedPackage.price)})
+Base Hours: ${quote.baseHours}
 Extra Hours: ${formData.extraHours} (${formatCurrency(formData.extraHours * 99)})
 
 Add-Ons:
@@ -41,21 +42,25 @@ Total Quote: ${formatCurrency(quote.finalTotal)}
 `
   };
   
-  // In a real application, this would be an API call to your backend
   console.log('Sending owner email:', payload);
   
-  // Return a mock promise that resolves to true after a delay
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(true), 500);
-  });
+  try {
+    // In a real application, this would be an API call to your backend
+    // For demonstration purposes, we're using a timeout to simulate an API call
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return true;
+  } catch (error) {
+    console.error('Error sending owner email:', error);
+    return false;
+  }
 };
 
-export const sendClientEmail = (formData: BookingFormData): Promise<boolean> => {
+export const sendClientEmail = async (formData: BookingFormData): Promise<boolean> => {
   const quote = calculateQuote(formData);
-  if (!quote || !formData.eventDate) return Promise.resolve(false);
+  if (!quote || !formData.eventDate) return false;
   
   const selectedPackage = PACKAGES.find(pkg => pkg.id === formData.selectedPackage);
-  if (!selectedPackage) return Promise.resolve(false);
+  if (!selectedPackage) return false;
   
   const selectedAddOns = ADD_ONS.filter(addon => formData.addOns.includes(addon.id));
   const addOnsList = selectedAddOns.length > 0 
@@ -72,6 +77,7 @@ Thank you for submitting your booking enquiry for your ${formData.eventType} on 
 
 Here's a summary of your request:
 Package: ${selectedPackage.name}
+Base Hours: ${quote.baseHours}
 Extra Hours: ${formData.extraHours}
 Add-Ons: ${addOnsList}
 Estimated Total Quote: ${formatCurrency(quote.finalTotal)}
@@ -82,17 +88,20 @@ We'll be in touch soon to confirm everything!
 `
   };
   
-  // In a real application, this would be an API call to your backend
   console.log('Sending client email:', payload);
   
-  // Return a mock promise that resolves to true after a delay
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(true), 800);
-  });
+  try {
+    // In a real application, this would be an API call to your backend
+    // For demonstration purposes, we're using a timeout to simulate an API call
+    await new Promise((resolve) => setTimeout(resolve, 800));
+    return true;
+  } catch (error) {
+    console.error('Error sending client email:', error);
+    return false;
+  }
 };
 
-// In a real implementation, this would connect to Supabase or another database
-export const saveBookingEnquiry = (formData: BookingFormData): Promise<boolean> => {
+export const saveBookingEnquiry = async (formData: BookingFormData): Promise<boolean> => {
   const quote = calculateQuote(formData);
   
   // Data to be saved to the database
@@ -103,11 +112,15 @@ export const saveBookingEnquiry = (formData: BookingFormData): Promise<boolean> 
     createdAt: new Date().toISOString()
   };
   
-  // In a real application, this would be an API call to your backend
   console.log('Saving booking enquiry:', enquiryData);
   
-  // Return a mock promise that resolves to true after a delay
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(true), 600);
-  });
+  try {
+    // In a real application, this would be an API call to your backend
+    // For demonstration purposes, we're using a timeout to simulate an API call
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    return true;
+  } catch (error) {
+    console.error('Error saving booking enquiry:', error);
+    return false;
+  }
 };

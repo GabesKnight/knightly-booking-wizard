@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -53,6 +53,7 @@ const formSchema = z.object({
   selectedPackage: z.enum(['digital', 'print', 'ultimate'], {
     required_error: "Please select a package",
   }),
+  baseHours: z.number().min(1).max(4),
   extraHours: z.number().min(0).max(EXTRA_HOURS_MAX),
   addOns: z.array(z.string()),
 });
@@ -69,6 +70,7 @@ const BookingForm = () => {
       eventType: "",
       eventDate: undefined,
       selectedPackage: undefined,
+      baseHours: 1,
       emailAddress: "",
       extraHours: 0,
       addOns: [],
@@ -78,10 +80,57 @@ const BookingForm = () => {
   // Get form values to calculate quote in real-time
   const formValues = form.watch();
   const quote = calculateQuote(formValues as BookingFormData);
+  
+  // Get the selected package
+  const selectedPackage = formValues.selectedPackage ? 
+    PACKAGES.find(pkg => pkg.id === formValues.selectedPackage) : null;
+
+  // Update base hours when package changes
+  useEffect(() => {
+    if (selectedPackage) {
+      form.setValue("baseHours", selectedPackage.minHours);
+    }
+  }, [formValues.selectedPackage, form]);
 
   // Handle package selection
   const handlePackageSelect = (packageId: PackageType) => {
+    const selectedPkg = PACKAGES.find(pkg => pkg.id === packageId);
+    
     form.setValue("selectedPackage", packageId);
+    
+    if (selectedPkg) {
+      // Set base hours to the minimum for this package
+      form.setValue("baseHours", selectedPkg.minHours);
+      
+      // Remove add-ons that are included in the package
+      const includedAddOnIds = selectedPkg.features
+        .filter(f => f.included && f.addonId)
+        .map(f => f.addonId) as string[];
+      
+      // Filter out included add-ons from the current selection
+      const filteredAddOns = form.getValues("addOns").filter(
+        addonId => !includedAddOnIds.includes(addonId)
+      );
+      
+      form.setValue("addOns", filteredAddOns);
+    }
+  };
+
+  // Check if an add-on is included in the selected package
+  const isAddOnIncluded = (addonId: string): boolean => {
+    if (!selectedPackage) return false;
+    
+    return selectedPackage.features.some(
+      feature => feature.addonId === addonId && feature.included
+    );
+  };
+
+  // Get tooltip text for disabled add-ons
+  const getAddOnTooltip = (addonId: string): string | undefined => {
+    if (isAddOnIncluded(addonId)) {
+      return `Already included in the ${selectedPackage?.name}`;
+    }
+    return undefined;
   };
 
   // Handle add-on toggle
@@ -110,12 +159,16 @@ const BookingForm = () => {
       // In a real application, you'd send this data to your backend
       console.log("Form data submitted:", data);
       
-      // Send emails and save booking enquiry
-      await Promise.all([
+      // Send emails and save booking enquiry using await with Promise.all
+      const [ownerEmailSent, clientEmailSent, bookingSaved] = await Promise.all([
         sendOwnerEmail(data as BookingFormData),
         sendClientEmail(data as BookingFormData),
         saveBookingEnquiry(data as BookingFormData)
       ]);
+      
+      if (!ownerEmailSent || !clientEmailSent) {
+        throw new Error("Failed to send emails");
+      }
       
       // Show success message
       toast.success("Booking enquiry submitted successfully!", {
@@ -189,7 +242,8 @@ const BookingForm = () => {
                           <span className="font-semibold text-xl">{field.value}</span>
                         </div>
                         <p className="text-gray-500 text-sm">
-                          Base package includes 4 hours. Extra hours ($99 each) are charged from the 5th hour onward.
+                          Base package includes {selectedPackage?.minHours || 1}-{selectedPackage?.maxHours || 4} hours. 
+                          Extra hours ($99 each) are charged beyond the base hours.
                         </p>
                       </div>
                     </FormItem>
@@ -210,6 +264,8 @@ const BookingForm = () => {
                       key={addOn.id}
                       addOn={addOn}
                       enabled={form.watch('addOns').includes(addOn.id)}
+                      disabled={isAddOnIncluded(addOn.id)}
+                      tooltipText={getAddOnTooltip(addOn.id)}
                       onToggle={handleAddOnToggle}
                     />
                   ))}

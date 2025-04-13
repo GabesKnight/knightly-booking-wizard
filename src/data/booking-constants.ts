@@ -6,45 +6,51 @@ export const PACKAGES: Package[] = [
     id: 'digital',
     name: 'Digital Package',
     price: 399,
+    minHours: 1,
+    maxHours: 4,
     hours: '1-4 Hours',
     features: [
-      { text: 'Instant Sharing (Wi-Fi Required)', included: true },
-      { text: 'Boomerangs & GIFs', included: true },
-      { text: 'Customized Photo Template', included: true },
-      { text: 'Prop Signs', included: true },
-      { text: 'No Prints', included: false },
-      { text: 'No Attendant', included: false }
+      { text: 'Instant Sharing (Wi-Fi Required)', included: true, addonId: 'instant-sharing' },
+      { text: 'Boomerangs & GIFs', included: true, addonId: 'boomerangs' },
+      { text: 'Customized Photo Template', included: true, addonId: 'custom-template' },
+      { text: 'Prop Signs', included: true, addonId: 'prop-signs' },
+      { text: 'No Prints', included: false, addonId: null },
+      { text: 'No Attendant', included: false, addonId: null }
     ]
   },
   {
     id: 'print',
     name: 'Print Package',
     price: 649,
-    hours: '2 Hours',
+    minHours: 2,
+    maxHours: 4,
+    hours: '2-4 Hours',
     features: [
-      { text: 'Unlimited Prints (2x6 Strips)', included: true },
-      { text: 'Instant Sharing (Wi-Fi Required)', included: true },
-      { text: 'Customized Photo Template', included: true },
-      { text: 'Prop Signs', included: true },
-      { text: 'Downloadable Photos', included: true },
-      { text: 'High Resolution Photos', included: true },
-      { text: 'On-Site Attendant', included: true }
+      { text: 'Unlimited Prints (2x6 Strips)', included: true, addonId: 'unlimited-prints' },
+      { text: 'Instant Sharing (Wi-Fi Required)', included: true, addonId: 'instant-sharing' },
+      { text: 'Customized Photo Template', included: true, addonId: 'custom-template' },
+      { text: 'Prop Signs', included: true, addonId: 'prop-signs' },
+      { text: 'Downloadable Photos', included: true, addonId: null },
+      { text: 'High Resolution Photos', included: true, addonId: null },
+      { text: 'On-Site Attendant', included: true, addonId: 'attendant' }
     ]
   },
   {
     id: 'ultimate',
     name: 'Ultimate Package',
     price: 799,
+    minHours: 1,
+    maxHours: 4,
     hours: '1-4 Hours',
     features: [
-      { text: 'Unlimited Prints (2x6 or 4x6)', included: true },
-      { text: 'Instant Sharing (Wi-Fi Required)', included: true },
-      { text: 'Boomerangs & GIFs', included: true },
-      { text: 'Customized Photo Template', included: true },
-      { text: 'Prop Signs', included: true },
-      { text: 'USB Thumb Drive with All Photos', included: true },
-      { text: 'Video Guestbook', included: true },
-      { text: 'On-Site Attendant', included: true }
+      { text: 'Unlimited Prints (2x6 or 4x6)', included: true, addonId: 'unlimited-prints' },
+      { text: 'Instant Sharing (Wi-Fi Required)', included: true, addonId: 'instant-sharing' },
+      { text: 'Boomerangs & GIFs', included: true, addonId: 'boomerangs' },
+      { text: 'Customized Photo Template', included: true, addonId: 'custom-template' },
+      { text: 'Prop Signs', included: true, addonId: 'prop-signs' },
+      { text: 'USB Thumb Drive with All Photos', included: true, addonId: 'usb-drive' },
+      { text: 'Video Guestbook', included: true, addonId: 'video-guestbook' },
+      { text: 'On-Site Attendant', included: true, addonId: 'attendant' }
     ]
   }
 ];

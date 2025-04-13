@@ -17,7 +17,7 @@ const PackageCard = ({ packageData, selected, onSelect }: PackageCardProps) => {
     >
       <h3 className="text-xl font-semibold text-knightly-green">{packageData.name}</h3>
       <p className="text-3xl font-bold mt-2">{formatCurrency(packageData.price, false)}</p>
-      <p className="text-gray-500">{packageData.hours}</p>
+      <p className="text-gray-500">{packageData.minHours}-{packageData.maxHours} Hours</p>
       
       <ul className="feature-list">
         {packageData.features.map((feature, index) => (

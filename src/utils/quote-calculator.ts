@@ -18,6 +18,8 @@ export const calculateQuote = (formData: BookingFormData): QuoteSummary | null =
   const selectedPackage = PACKAGES.find(pkg => pkg.id === formData.selectedPackage);
   if (!selectedPackage) return null;
 
+  const baseHours = formData.baseHours || selectedPackage.minHours;
+
   // Calculate extra hours cost
   const extraHoursCount = formData.extraHours || 0;
   const extraHoursPrice = extraHoursCount * 99;
@@ -53,6 +55,7 @@ export const calculateQuote = (formData: BookingFormData): QuoteSummary | null =
   return {
     packageName: selectedPackage.name,
     packagePrice: selectedPackage.price,
+    baseHours,
     extraHoursCount,
     extraHoursPrice,
     addOns: addOnsDetails,

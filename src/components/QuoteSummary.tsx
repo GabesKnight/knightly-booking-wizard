@@ -30,7 +30,7 @@ const QuoteSummary = ({ quote }: QuoteSummaryProps) => {
         </div>
         <div className="flex justify-between mb-1">
           <span>Base Hours:</span>
-          <span className="font-medium">4 hours</span>
+          <span className="font-medium">{quote.baseHours} hours</span>
         </div>
       </div>
 
@@ -41,7 +41,7 @@ const QuoteSummary = ({ quote }: QuoteSummaryProps) => {
         </div>
         <div className="flex justify-between mb-1">
           <span>Total Hours:</span>
-          <span className="font-medium">4 {quote.extraHoursCount > 0 ? `+ ${quote.extraHoursCount}` : ''} hours</span>
+          <span className="font-medium">{quote.baseHours} {quote.extraHoursCount > 0 ? `+ ${quote.extraHoursCount}` : ''} hours</span>
         </div>
       </div>
 

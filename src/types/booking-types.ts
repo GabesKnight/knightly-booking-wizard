@@ -5,10 +5,13 @@ export interface Package {
   id: PackageType;
   name: string;
   price: number;
+  minHours: number;
+  maxHours: number;
   hours: string;
   features: {
     text: string;
     included: boolean;
+    addonId: string | null;
   }[];
 }
 
@@ -26,12 +29,14 @@ export interface BookingFormData {
   emailAddress: string;
   selectedPackage: PackageType | null;
   extraHours: number;
+  baseHours: number;
   addOns: string[];
 }
 
 export interface QuoteSummary {
   packageName: string;
   packagePrice: number;
+  baseHours: number;
   extraHoursCount: number;
   extraHoursPrice: number;
   addOns: {
