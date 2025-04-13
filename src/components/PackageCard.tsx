@@ -10,6 +10,11 @@ interface PackageCardProps {
 }
 
 const PackageCard = ({ packageData, selected, onSelect }: PackageCardProps) => {
+  // Display hours correctly - if min and max are the same, just show one number
+  const hoursDisplay = packageData.minHours === packageData.maxHours 
+    ? `${packageData.minHours} Hours` 
+    : `${packageData.minHours}-${packageData.maxHours} Hours`;
+
   return (
     <div 
       className={`package-card ${selected ? 'selected' : ''}`}
@@ -17,7 +22,7 @@ const PackageCard = ({ packageData, selected, onSelect }: PackageCardProps) => {
     >
       <h3 className="text-xl font-semibold text-knightly-green">{packageData.name}</h3>
       <p className="text-3xl font-bold mt-2">{formatCurrency(packageData.price, false)}</p>
-      <p className="text-gray-500">{packageData.minHours}-{packageData.maxHours} Hours</p>
+      <p className="text-gray-500">{hoursDisplay}</p>
       
       <ul className="feature-list">
         {packageData.features.map((feature, index) => (

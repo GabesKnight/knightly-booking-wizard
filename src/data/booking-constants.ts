@@ -23,8 +23,8 @@ export const PACKAGES: Package[] = [
     name: 'Print Package',
     price: 649,
     minHours: 2,
-    maxHours: 4,
-    hours: '2-4 Hours',
+    maxHours: 2, // Changed from 4 to 2 to make it fixed at 2 hours
+    hours: '2 Hours', // Updated to show fixed 2 hours instead of range
     features: [
       { text: 'Unlimited Prints (2x6 Strips)', included: true, addonId: 'unlimited-prints' },
       { text: 'Instant Sharing (Wi-Fi Required)', included: true, addonId: 'instant-sharing' },

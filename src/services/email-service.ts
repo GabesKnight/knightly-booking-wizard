@@ -10,6 +10,32 @@ interface EmailPayload {
   body: string;
 }
 
+// Function to send API request for emails
+const sendEmailRequest = async (payload: EmailPayload): Promise<boolean> => {
+  try {
+    // In a real application, you would make an API call to your backend email service
+    // For now, we'll simulate a successful API call
+    console.log('Sending email:', payload);
+    
+    // Simulate API request with fetch (in production, replace with your actual API endpoint)
+    // const response = await fetch('https://api.yourbackend.com/send-email', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(payload),
+    // });
+    // return response.ok;
+    
+    // For now, simulate a successful API call after a short delay
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return true;
+  } catch (error) {
+    console.error('Error sending email:', error);
+    return false;
+  }
+};
+
 export const sendOwnerEmail = async (formData: BookingFormData): Promise<boolean> => {
   const quote = calculateQuote(formData);
   if (!quote || !formData.eventDate) return false;
@@ -44,15 +70,8 @@ Total Quote: ${formatCurrency(quote.finalTotal)}
   
   console.log('Sending owner email:', payload);
   
-  try {
-    // In a real application, this would be an API call to your backend
-    // For demonstration purposes, we're using a timeout to simulate an API call
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    return true;
-  } catch (error) {
-    console.error('Error sending owner email:', error);
-    return false;
-  }
+  // Use the sendEmailRequest function to actually send the email
+  return await sendEmailRequest(payload);
 };
 
 export const sendClientEmail = async (formData: BookingFormData): Promise<boolean> => {
@@ -90,15 +109,8 @@ We'll be in touch soon to confirm everything!
   
   console.log('Sending client email:', payload);
   
-  try {
-    // In a real application, this would be an API call to your backend
-    // For demonstration purposes, we're using a timeout to simulate an API call
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    return true;
-  } catch (error) {
-    console.error('Error sending client email:', error);
-    return false;
-  }
+  // Use the sendEmailRequest function to actually send the email
+  return await sendEmailRequest(payload);
 };
 
 export const saveBookingEnquiry = async (formData: BookingFormData): Promise<boolean> => {
