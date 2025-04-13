@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { format } from "date-fns";
-import { CalendarIcon, Camera, Check, ChevronsUpDown, Wrench } from "lucide-react";
+import { CalendarIcon, Camera, Check, ChevronsUpDown, Wrench, X } from "lucide-react";
 
 import { ADD_ONS, EVENT_TYPES, EXTRA_HOURS_MAX, PACKAGES } from "@/data/booking-constants";
 import { BookingFormData, PackageType } from "@/types/booking-types";
@@ -59,6 +59,7 @@ const formSchema = z.object({
 
 const BookingForm = () => {
   const [formSubmitting, setFormSubmitting] = useState(false);
+  const [sliderValue, setSliderValue] = useState(0);
   
   // Initialize form
   const form = useForm<z.infer<typeof formSchema>>({
@@ -94,6 +95,13 @@ const BookingForm = () => {
     }
   };
 
+  // Handle slider change
+  const handleSliderChange = (value: number[]) => {
+    const hours = value[0];
+    setSliderValue(hours);
+    form.setValue("extraHours", hours);
+  };
+
   // Handle form submission
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
@@ -116,6 +124,7 @@ const BookingForm = () => {
       
       // Reset form
       form.reset();
+      setSliderValue(0);
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Failed to submit booking enquiry", {
@@ -127,22 +136,22 @@ const BookingForm = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="text-center mb-10">
-        <h1 className="text-4xl font-bold text-knightly-gold">The Knightly Photobooth</h1>
+    <div className="max-w-7xl mx-auto px-4">
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-bold text-knightly-green">The Knightly Photobooth</h1>
         <h2 className="text-2xl text-knightly-green mt-2">Interactive Pricing Calculator</h2>
         <p className="text-gray-600 mt-2">Create your custom photobooth package for your special event</p>
       </div>
       
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-10">
+            <div className="lg:col-span-2 space-y-8">
               {/* Package Selection */}
-              <div>
+              <div className="bg-white rounded-lg p-6 shadow-sm">
                 <div className="flex items-center gap-2 mb-6">
                   <Camera className="text-knightly-gold" size={24} />
-                  <h3 className="text-xl font-semibold">Select Your Core Package</h3>
+                  <h3 className="text-xl font-semibold text-knightly-green">Select Your Core Package</h3>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -158,28 +167,30 @@ const BookingForm = () => {
               </div>
               
               {/* Extra Hours Slider */}
-              <div>
-                <h3 className="text-xl font-semibold mb-4">Extra Hours</h3>
+              <div className="bg-white rounded-lg p-6 shadow-sm">
+                <h3 className="text-xl font-semibold mb-4 text-knightly-green">Extra Hours</h3>
                 <FormField
                   control={form.control}
                   name="extraHours"
                   render={({ field }) => (
                     <FormItem>
-                      <div className="space-y-4">
+                      <div className="space-y-2">
                         <div className="flex justify-between">
-                          <FormLabel>Add extra hours at $99 per hour</FormLabel>
+                          <div className="flex items-center gap-2">
+                            <Slider
+                              min={0}
+                              max={EXTRA_HOURS_MAX}
+                              step={1}
+                              value={[field.value]}
+                              onValueChange={handleSliderChange}
+                              className="w-[300px]"
+                            />
+                          </div>
                           <span className="font-semibold text-xl">{field.value}</span>
                         </div>
-                        <FormControl>
-                          <Slider
-                            min={0}
-                            max={EXTRA_HOURS_MAX}
-                            step={1}
-                            value={[field.value]}
-                            onValueChange={(value) => field.onChange(value[0])}
-                            className="slider-track"
-                          />
-                        </FormControl>
+                        <p className="text-gray-500 text-sm">
+                          Base package includes 4 hours. Extra hours ($99 each) are charged from the 5th hour onward.
+                        </p>
                       </div>
                     </FormItem>
                   )}
@@ -187,10 +198,10 @@ const BookingForm = () => {
               </div>
               
               {/* Optional Add-Ons */}
-              <div>
+              <div className="bg-white rounded-lg p-6 shadow-sm">
                 <div className="flex items-center gap-2 mb-6">
                   <Wrench className="text-knightly-gold" size={20} />
-                  <h3 className="text-xl font-semibold">Optional Add-Ons</h3>
+                  <h3 className="text-xl font-semibold text-knightly-green">Optional Add-Ons</h3>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-3">
@@ -221,13 +232,13 @@ const BookingForm = () => {
               <div className="sticky top-8 space-y-8">
                 {/* Quote Summary */}
                 <div className="bg-white p-6 rounded-lg border shadow-sm">
-                  <h3 className="text-xl font-semibold mb-4">Your Quote Summary</h3>
+                  <h3 className="text-xl font-semibold mb-4 text-knightly-green">Your Quote Summary</h3>
                   <QuoteSummary quote={quote} />
                 </div>
                 
                 {/* Personal Information */}
                 <div className="bg-white p-6 rounded-lg border shadow-sm">
-                  <h3 className="text-xl font-semibold mb-4">Your Information</h3>
+                  <h3 className="text-xl font-semibold mb-4 text-knightly-green">Your Information</h3>
                   
                   <div className="space-y-4">
                     {/* Name Field */}
@@ -289,9 +300,9 @@ const BookingForm = () => {
                                   )}
                                 >
                                   {field.value ? (
-                                    format(field.value, "PPP")
+                                    format(field.value, "PP")
                                   ) : (
-                                    <span>Pick a date</span>
+                                    <span>dd/mm/yyyy</span>
                                   )}
                                   <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                 </Button>
@@ -331,7 +342,7 @@ const BookingForm = () => {
                     {/* Submit Button */}
                     <Button 
                       type="submit" 
-                      className="w-full bg-knightly-gold hover:bg-knightly-gold-light text-white mt-4"
+                      className="w-full bg-knightly-green hover:bg-knightly-green-light text-white mt-4"
                       disabled={formSubmitting || !quote}
                     >
                       {formSubmitting ? "Submitting..." : "Submit Booking Enquiry"}

@@ -21,27 +21,29 @@ const QuoteSummary = ({ quote }: QuoteSummaryProps) => {
     <div className="space-y-4">
       <div className="border-b pb-2">
         <div className="flex justify-between mb-1">
-          <span>Base Package:</span>
+          <span>Selected Package:</span>
           <span className="font-medium">{quote.packageName}</span>
         </div>
-        <div className="flex justify-between">
-          <span></span>
-          <span className="font-semibold">{formatCurrency(quote.packagePrice)}</span>
+        <div className="flex justify-between mb-1">
+          <span>Base Price:</span>
+          <span className="font-semibold">{formatCurrency(quote.packagePrice, false)}</span>
+        </div>
+        <div className="flex justify-between mb-1">
+          <span>Base Hours:</span>
+          <span className="font-medium">4 hours</span>
         </div>
       </div>
 
-      {quote.extraHoursCount > 0 && (
-        <div className="border-b pb-2">
-          <div className="flex justify-between mb-1">
-            <span>Extra Hours:</span>
-            <span className="font-medium">{quote.extraHoursCount} {quote.extraHoursCount === 1 ? 'hour' : 'hours'}</span>
-          </div>
-          <div className="flex justify-between">
-            <span></span>
-            <span className="font-semibold">{formatCurrency(quote.extraHoursPrice)}</span>
-          </div>
+      <div className="border-b pb-2">
+        <div className="flex justify-between mb-1">
+          <span>Extra Hours:</span>
+          <span className="font-medium">{formatCurrency(quote.extraHoursPrice, false)}</span>
         </div>
-      )}
+        <div className="flex justify-between mb-1">
+          <span>Total Hours:</span>
+          <span className="font-medium">4 {quote.extraHoursCount > 0 ? `+ ${quote.extraHoursCount}` : ''} hours</span>
+        </div>
+      </div>
 
       {quote.addOns.length > 0 && (
         <div className="border-b pb-2">
@@ -51,14 +53,14 @@ const QuoteSummary = ({ quote }: QuoteSummaryProps) => {
           {quote.addOns.map((addon, index) => (
             <div key={index} className="flex justify-between text-sm">
               <span>{addon.name}</span>
-              <span>{formatCurrency(addon.price)}</span>
+              <span>{formatCurrency(addon.price, false)}</span>
             </div>
           ))}
           
           {quote.addOnsDiscount > 0 && (
             <div className="flex justify-between mt-2 text-green-600">
               <span>Discount:</span>
-              <span>-{formatCurrency(quote.addOnsDiscount)}</span>
+              <span>-{formatCurrency(quote.addOnsDiscount, false)}</span>
             </div>
           )}
         </div>
@@ -66,8 +68,8 @@ const QuoteSummary = ({ quote }: QuoteSummaryProps) => {
 
       <div className="pt-2">
         <div className="flex justify-between font-bold text-lg">
-          <span>Total:</span>
-          <span className="text-knightly-gold">{formatCurrency(quote.finalTotal)}</span>
+          <span>Total Price:</span>
+          <span className="text-knightly-gold">{formatCurrency(quote.finalTotal, true)}</span>
         </div>
       </div>
     </div>

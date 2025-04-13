@@ -15,8 +15,8 @@ const PackageCard = ({ packageData, selected, onSelect }: PackageCardProps) => {
       className={`package-card ${selected ? 'selected' : ''}`}
       onClick={() => onSelect(packageData.id)}
     >
-      <h3 className="text-xl font-semibold text-knightly-gold">{packageData.name}</h3>
-      <p className="text-3xl font-bold mt-2">{formatCurrency(packageData.price)}</p>
+      <h3 className="text-xl font-semibold text-knightly-green">{packageData.name}</h3>
+      <p className="text-3xl font-bold mt-2">{formatCurrency(packageData.price, false)}</p>
       <p className="text-gray-500">{packageData.hours}</p>
       
       <ul className="feature-list">
@@ -39,7 +39,7 @@ const PackageCard = ({ packageData, selected, onSelect }: PackageCardProps) => {
           onSelect(packageData.id);
         }}
       >
-        {selected ? 'Selected Package' : 'Select Package'}
+        Select Package
       </button>
     </div>
   );

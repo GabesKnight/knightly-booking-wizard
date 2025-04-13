@@ -13,13 +13,13 @@ const AddOnSwitch = ({ addOn, enabled, onToggle }: AddOnSwitchProps) => {
   return (
     <div className="flex justify-between items-center py-2">
       <div>
-        <div className="flex items-center">
+        <div>
           <span className="font-medium">{addOn.name}</span>
           {addOn.description && (
-            <span className="text-sm text-gray-500 ml-1">- {addOn.description}</span>
+            <span className="text-sm text-gray-500 block">{addOn.description}</span>
           )}
         </div>
-        <div className="text-sm font-semibold text-knightly-gold">{formatCurrency(addOn.price)}</div>
+        <div className="text-sm font-semibold">{formatCurrency(addOn.price, false)}</div>
       </div>
       <Switch
         checked={enabled}

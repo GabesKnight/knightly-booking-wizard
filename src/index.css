@@ -57,7 +57,7 @@
 }
 
 .package-card {
-  @apply relative border rounded-md p-6 transition-all duration-200;
+  @apply relative border rounded-md p-6 transition-all duration-200 bg-white;
 }
 
 .package-card.selected {

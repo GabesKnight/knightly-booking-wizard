@@ -1,42 +1,51 @@
 
-import { ADD_ON_DISCOUNT_TIERS, ADD_ONS, EXTRA_HOURS_PRICE, PACKAGES } from "@/data/booking-constants";
+import { ADD_ONS, PACKAGES } from "@/data/booking-constants";
 import { BookingFormData, QuoteSummary } from "@/types/booking-types";
 
-export function calculateQuote(formData: BookingFormData): QuoteSummary | null {
-  if (!formData.selectedPackage) {
-    return null;
-  }
+export const formatCurrency = (amount: number, showCents: boolean = true): string => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: showCents ? 2 : 0,
+    maximumFractionDigits: showCents ? 2 : 0,
+  }).format(amount);
+};
 
-  // Find the selected package
+export const calculateQuote = (formData: BookingFormData): QuoteSummary | null => {
+  if (!formData.selectedPackage) return null;
+
+  // Find selected package
   const selectedPackage = PACKAGES.find(pkg => pkg.id === formData.selectedPackage);
-  if (!selectedPackage) {
-    return null;
-  }
+  if (!selectedPackage) return null;
 
   // Calculate extra hours cost
-  const extraHoursCount = formData.extraHours;
-  const extraHoursPrice = extraHoursCount * EXTRA_HOURS_PRICE;
+  const extraHoursCount = formData.extraHours || 0;
+  const extraHoursPrice = extraHoursCount * 99;
 
   // Calculate add-ons
-  const selectedAddOns = ADD_ONS.filter(addon => formData.addOns.includes(addon.id));
-  const addOnsDetails = selectedAddOns.map(addon => ({
-    name: addon.name,
-    price: addon.price
-  }));
-  
-  const addOnsTotal = selectedAddOns.reduce((sum, addon) => sum + addon.price, 0);
+  const selectedAddOns = formData.addOns || [];
+  const addOnsDetails = selectedAddOns.map(addonId => {
+    const addon = ADD_ONS.find(a => a.id === addonId);
+    return {
+      name: addon?.name || '',
+      price: addon?.price || 0
+    };
+  });
 
-  // Calculate add-on discounts
-  let addOnsDiscount = 0;
-  const addOnCount = selectedAddOns.length;
+  // Calculate add-ons total
+  const addOnsTotal = addOnsDetails.reduce((sum, addon) => sum + addon.price, 0);
 
-  // Find the highest applicable discount tier
-  for (let i = ADD_ON_DISCOUNT_TIERS.length - 1; i >= 0; i--) {
-    if (addOnCount >= ADD_ON_DISCOUNT_TIERS[i].count) {
-      addOnsDiscount = addOnsTotal * ADD_ON_DISCOUNT_TIERS[i].discount;
-      break;
-    }
+  // Calculate discount based on number of add-ons
+  let discountPercentage = 0;
+  if (selectedAddOns.length >= 4) {
+    discountPercentage = 0.2; // 20% discount
+  } else if (selectedAddOns.length === 3) {
+    discountPercentage = 0.15; // 15% discount
+  } else if (selectedAddOns.length === 2) {
+    discountPercentage = 0.1; // 10% discount
   }
+
+  const addOnsDiscount = addOnsTotal * discountPercentage;
 
   // Calculate final total
   const finalTotal = selectedPackage.price + extraHoursPrice + addOnsTotal - addOnsDiscount;
@@ -51,13 +60,4 @@ export function calculateQuote(formData: BookingFormData): QuoteSummary | null {
     addOnsDiscount,
     finalTotal
   };
-}
-
-export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  }).format(amount);
-}
+};
