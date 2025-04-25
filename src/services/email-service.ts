@@ -3,6 +3,7 @@ import { BookingFormData } from "@/types/booking-types";
 import { calculateQuote, formatCurrency } from "@/utils/quote-calculator";
 import { ADD_ONS, PACKAGES } from "@/data/booking-constants";
 import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 interface EmailPayload {
   to: string;
@@ -10,26 +11,23 @@ interface EmailPayload {
   body: string;
 }
 
-// Function to send API request for emails
+// Function to send API request for emails using Supabase Edge Function
 const sendEmailRequest = async (payload: EmailPayload): Promise<boolean> => {
   try {
-    // In a real application, you would make an API call to your backend email service
-    // For now, we'll simulate a successful API call
     console.log('Sending email:', payload);
     
-    // Simulate API request with fetch (in production, replace with your actual API endpoint)
-    // const response = await fetch('https://api.yourbackend.com/send-email', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(payload),
-    // });
-    // return response.ok;
+    // Call the Supabase Edge Function to send the email
+    const { data, error } = await supabase.functions.invoke('send-email', {
+      body: payload
+    });
     
-    // For now, simulate a successful API call after a short delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    return true;
+    if (error) {
+      console.error('Error invoking send-email function:', error);
+      return false;
+    }
+    
+    console.log('Email function response:', data);
+    return data?.success || true;
   } catch (error) {
     console.error('Error sending email:', error);
     return false;
